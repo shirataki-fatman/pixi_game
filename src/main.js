@@ -14,7 +14,7 @@ document.body.appendChild(renderer.view);
 Input.init(renderer.view);
 
 SceneManager.init(stage);
-SceneManager.start("main");
+SceneManager.start("title");
 requestAnimationFrame(mainLoop);
 
 function mainLoop(timestamp) {

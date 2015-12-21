@@ -61,7 +61,7 @@
 	Input.init(renderer.view);
 
 	SceneManager.init(stage);
-	SceneManager.start("main");
+	SceneManager.start("title");
 	requestAnimationFrame(mainLoop);
 
 	function mainLoop(timestamp) {
@@ -82,6 +82,7 @@
 
 	var SceneManager = {
 	    _scenes: {
+	        title: Scene.Title,
 	        main: Scene.Main
 	    },
 	    init: function init(stage) {
@@ -92,6 +93,10 @@
 	    },
 	    update: function update() {
 	        this.currentScene.update();
+	        if (this.currentScene.isEnd) {
+	            var nextSceneName = this.currentScene.getNextSceneName();
+	            this.start(nextSceneName);
+	        }
 	    }
 	};
 
@@ -114,6 +119,7 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Entity = __webpack_require__(3);
+	var Input = __webpack_require__(4);
 
 	var SCENE_INIT = 0;
 	var SCENE_MAIN = 1;
@@ -128,6 +134,9 @@
 	        this.state = SCENE_INIT;
 	        this.container = new PIXI.Container();
 	        this.entities = {};
+	        this._next = null;
+	        this.isEnd = false;
+	        this.stage = stage;
 
 	        stage.addChild(this.container);
 	    }
@@ -164,6 +173,11 @@
 	            return this.container;
 	        }
 	    }, {
+	        key: "getNextSceneName",
+	        value: function getNextSceneName() {
+	            return this._next;
+	        }
+	    }, {
 	        key: "_init",
 	        value: function _init() {
 	            this.state = SCENE_MAIN;
@@ -179,14 +193,60 @@
 	        }
 	    }, {
 	        key: "_end",
-	        value: function _end() {}
+	        value: function _end() {
+	            this.isEnd = true;
+
+	            for (var tag in this.entities) {
+	                for (var i in this.entities[tag]) {
+	                    this.container.removeChild(this.entities[tag][i].drawer);
+	                }
+	            }
+
+	            this.stage.removeChild(this.container);
+	        }
 	    }]);
 
 	    return Scene;
 	})();
 
-	var MainScene = (function (_Scene) {
-	    _inherits(MainScene, _Scene);
+	var TitleScene = (function (_Scene) {
+	    _inherits(TitleScene, _Scene);
+
+	    function TitleScene(stage) {
+	        _classCallCheck(this, TitleScene);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(TitleScene).call(this, stage));
+	    }
+
+	    _createClass(TitleScene, [{
+	        key: "_init",
+	        value: function _init() {
+	            var text = new PIXI.Text('This is a Title Scene', { font: '24px Arial', fill: 0x1010ff, align: 'center' });
+	            var textEntity = new Entity.Base(text, 320, 240);
+	            this.addEntity(textEntity);
+
+	            _get(Object.getPrototypeOf(TitleScene.prototype), "_init", this).call(this);
+	        }
+	    }, {
+	        key: "_main",
+	        value: function _main() {
+	            _get(Object.getPrototypeOf(TitleScene.prototype), "_main", this).call(this);
+
+	            var keyBuffer = Input.getBuffer();
+	            console.log(keyBuffer);
+
+	            if (keyBuffer[13] && keyBuffer[13] === 1) {
+	                this._next = "main";
+	                this.state = SCENE_END;
+	            }
+	        }
+	    }]);
+
+	    return TitleScene;
+	})(Scene);
+
+	var MainScene = (function (_Scene2) {
+	    _inherits(MainScene, _Scene2);
 
 	    function MainScene(stage) {
 	        _classCallCheck(this, MainScene);
@@ -199,7 +259,6 @@
 	        value: function _init() {
 	            var text = new PIXI.Text('This is a Main Scene', { font: '24px Arial', fill: 0xff1010, align: 'center' });
 	            var textEntity = new Entity.Player(text, 320, 240);
-
 	            this.addEntity(textEntity);
 
 	            _get(Object.getPrototypeOf(MainScene.prototype), "_init", this).call(this);
@@ -215,6 +274,7 @@
 	})(Scene);
 
 	module.exports = {
+	    Title: TitleScene,
 	    Main: MainScene
 	};
 

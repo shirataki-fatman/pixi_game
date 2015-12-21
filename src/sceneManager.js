@@ -2,7 +2,8 @@ var Scene = require("./scenes.js");
 
 var SceneManager = {
     _scenes: {
-        main: Scene.Main
+        title: Scene.Title,
+        main: Scene.Main,
     },
     init(stage) {
         this._stage = stage;
@@ -12,6 +13,10 @@ var SceneManager = {
     },
     update() {
         this.currentScene.update();
+        if (this.currentScene.isEnd) {
+            var nextSceneName = this.currentScene.getNextSceneName();
+            this.start(nextSceneName);
+        }
     }
 };
 
