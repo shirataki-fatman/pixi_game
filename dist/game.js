@@ -88,7 +88,6 @@
 	        this._stage = stage;
 	    },
 	    start: function start(sceneName) {
-	        console.log(this._stage);
 	        this.currentScene = new this._scenes[sceneName](this._stage);
 	    },
 	    update: function update() {

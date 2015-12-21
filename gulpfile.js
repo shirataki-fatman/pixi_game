@@ -4,7 +4,8 @@ var webserver = require("gulp-webserver");
 
 gulp.task("build", function() {
   gulp.src("./")
-      .pipe(webpack(require("./webpack.config.js")));
+      .pipe(webpack(require("./webpack.config.js")))
+      .pipe(gulp.dest("./dist/"));
 });
 
 gulp.task("watch-build", function() {

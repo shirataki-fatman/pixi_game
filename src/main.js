@@ -9,7 +9,7 @@ var Input = require("./input.js");
 
 var stage = new PIXI.Stage(0x000000);
 var renderer = PIXI.autoDetectRenderer(640, 480);
-
+ 
 document.body.appendChild(renderer.view);
 Input.init(renderer.view);
 
