@@ -46,8 +46,8 @@
 
 	"use strict";
 
-	var Scenes = __webpack_require__(1);
-	var Input = __webpack_require__(3);
+	var SceneManager = __webpack_require__(1);
+	var Input = __webpack_require__(4);
 
 	(function () {
 	    var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -60,20 +60,46 @@
 	document.body.appendChild(renderer.view);
 	Input.init(renderer.view);
 
+	SceneManager.init(stage);
+	SceneManager.start("main");
 	requestAnimationFrame(mainLoop);
-
-	var scene = new Scenes.Main(stage);
 
 	function mainLoop(timestamp) {
 	    requestAnimationFrame(mainLoop);
 
-	    scene.update();
+	    SceneManager.update();
 
 	    renderer.render(stage);
 	}
 
 /***/ },
 /* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var Scene = __webpack_require__(2);
+
+	var SceneManager = {
+	    _scenes: {
+	        main: Scene.Main
+	    },
+	    init: function init(stage) {
+	        this._stage = stage;
+	    },
+	    start: function start(sceneName) {
+	        console.log(this._stage);
+	        this.currentScene = new this._scenes[sceneName](this._stage);
+	    },
+	    update: function update() {
+	        this.currentScene.update();
+	    }
+	};
+
+	module.exports = SceneManager;
+
+/***/ },
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -88,7 +114,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Entity = __webpack_require__(2);
+	var Entity = __webpack_require__(3);
 
 	var SCENE_INIT = 0;
 	var SCENE_MAIN = 1;
@@ -194,7 +220,7 @@
 	};
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -209,7 +235,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Input = __webpack_require__(3);
+	var Input = __webpack_require__(4);
 
 	var Entity = (function () {
 	    function Entity(drawer, x, y) {
@@ -304,7 +330,7 @@
 	};
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	"use strict";
